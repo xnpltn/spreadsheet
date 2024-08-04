@@ -17,4 +17,5 @@ func loadAPIRoutes(app core.App) {
 	apiRoutes.POST("/save", api.Save(app))
 	apiRoutes.POST("/new", api.CreateNewSpreadSheet(app))
 	apiRoutes.GET("/cells/:spreadsheetid", api.Fetch(app))
+	apiRoutes.POST("/delete-sheet/:id", api.DeleteSheet(app))
 }

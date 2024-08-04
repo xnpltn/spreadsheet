@@ -9,7 +9,7 @@ import (
 templ HomeView(sheets []models.Sheet) {
 <h1>Home </h1>
 <!-- Button to trigger the modal -->
-<div class="flex items-center justify-center bg-gray-200 rounded p-5">
+<div class="flex items-center justify-between bg-gray-200 rounded p-5">
   <button type="button" class="text-lg rounded bg-blue-500 px-3 py-2 text-white" onclick="openModal()">Add</button>
 </div>
 @components.CreateNewModal()

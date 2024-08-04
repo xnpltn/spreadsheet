@@ -101,3 +101,13 @@ func CreateNewSpreadSheet(app core.App) echo.HandlerFunc {
 		}
 	}
 }
+
+func DeleteSheet(app core.App) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		c.Response().Header().Set("HX-Redirect", "/")
+		id := c.Param("id")
+		app.DB().Where("sheet_id = ? ", id).Delete(&models.Cell{})
+		app.DB().Delete(&models.Sheet{}, id)
+		return c.JSON(200, "okay")
+	}
+}

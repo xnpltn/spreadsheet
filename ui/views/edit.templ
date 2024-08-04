@@ -2,13 +2,18 @@ package views
 
 import (
 "spreadsheet/spdb/models"
+"fmt"
 )
 
 templ EditView(sheet models.Sheet) {
 <h1 class="text-2xl font-bold text-center my-4">Edit view</h1>
 <div id="info-container" class="p-4 bg-white shadow-lg rounded-lg">
   <h2 class="text-xl font-semibold">{ sheet.Name }</h2>
-  <button id="export-btn" class="bg-blue-500 text-white px-4 py-2 rounded mt-4">Export</button>
+  <div class="flex justify-between items-cente ">
+    <button id="export-btn" class="bg-blue-500 text-white px-4 py-2 rounded mt-4">Download</button>
+    <button id="export-btn" hx-post={ fmt.Sprintf(`/api/delete-sheet/%d`, sheet.ID) } hx-confirm="Are you sure?"
+      class="bg-red-500 text-white px-4 py-2 rounded mt-4">Delete</button>
+  </div>
   <span id="active-container" class="block my-4"></span>
   <div id="scon" class="overflow-auto whitespace-nowrap"></div> <!-- Ensure horizontal scrolling -->
 </div>
@@ -18,7 +23,7 @@ templ EditView(sheet models.Sheet) {
   const activeContainer = document.getElementById("active-container");
   const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-  const ROWS = 100;
+  const ROWS = 10;
   const COLS = alphabets.length + 1;
   let spreadSheet = [];
 
@@ -33,7 +38,6 @@ templ EditView(sheet models.Sheet) {
       this.rowName = rowName;
       this.columnName = columnName;
       this.name = `${this.columnName}${this.rowName}`;
-      this.dataType = "text";
       this.sheetID = undefined;
     }
   }
@@ -43,13 +47,14 @@ templ EditView(sheet models.Sheet) {
     const parts = url.pathname.split('/');
     const id = parts[parts.length - 1];
     return id
+
   }
 
-  // download data in csv format
+  // download data
   downloadButton.addEventListener("click", (_) => {
     let data = "";
     for (let i = 0; i < spreadSheet.length; i++) {
-      csv += spreadSheet[i].filter(item => !item.isHeader).map(item => item.data).join(",") + "\r\n";
+      data += spreadSheet[i].filter(item => !item.isHeader).map(item => item.data).join(",") + "\r\n";
     }
     const csvBlob = new Blob([data]);
     const csvFileUrl = URL.createObjectURL(csvBlob);
